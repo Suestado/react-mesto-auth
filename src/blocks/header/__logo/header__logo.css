@@ -1,4 +1,5 @@
 .header__logo {
+  /*flex-grow: 100;*/
   width: 142px;
   height: 33px;
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 import Api from '../utils/Api.js';
 import Header from './Header.js';
@@ -9,6 +10,9 @@ import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import ConfirmCardDelete from './ConfirmCardDelete.js';
+import Login from './Login.js';
+import Register from './Register.js';
+import AuthForm from './AuthForm.js';
 
 
 function App() {
@@ -110,63 +114,72 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
 
       <Header/>
+      <AuthForm/>
+      <Routes>
+        <Route path="/sign-up" element={Login} />
+        <Route path="/sign-in" element={Register} />
 
-      <Main
-        onEditProfile={() => setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}
-        onAddPlace={() => setIsAddPlacePopupOpen(!isAddPlacePopupOpen)}
-        onEditAvatar={() => setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}
-        onImagePopup={() => setIsImagePopupOpen(!setIsImagePopupOpen)}
-        onClose={closeAllPopups}
-        isImagePopupOpen={isImagePopupOpen}
-        handleCardClick={(evt) => {
-          setSelectedCard(evt.target);
-          setIsImagePopupOpen(!isImagePopupOpen);
-        }}
-        cards={cards}
-        onCardLike={handleCardLike}
-        onCardDelete={handleCardDelete}
-      />
+        {/*<Route path="/" element={*/}
+        {/*  <>*/}
+        {/*    <Main*/}
+        {/*      onEditProfile={() => setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}*/}
+        {/*      onAddPlace={() => setIsAddPlacePopupOpen(!isAddPlacePopupOpen)}*/}
+        {/*      onEditAvatar={() => setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}*/}
+        {/*      onImagePopup={() => setIsImagePopupOpen(!setIsImagePopupOpen)}*/}
+        {/*      onClose={closeAllPopups}*/}
+        {/*      isImagePopupOpen={isImagePopupOpen}*/}
+        {/*      handleCardClick={(evt) => {*/}
+        {/*        setSelectedCard(evt.target);*/}
+        {/*        setIsImagePopupOpen(!isImagePopupOpen);*/}
+        {/*      }}*/}
+        {/*      cards={cards}*/}
+        {/*      onCardLike={handleCardLike}*/}
+        {/*      onCardDelete={handleCardDelete}*/}
+        {/*    />*/}
+
+        {/*    <EditProfilePopup*/}
+        {/*      isOpen={isEditProfilePopupOpen}*/}
+        {/*      onClose={closeAllPopups}*/}
+        {/*      onOverlayClose={handleOverlayClose}*/}
+        {/*      onSubmitPopup={handleUpdateUser}*/}
+        {/*      isUploading={isUploading}*/}
+        {/*    />*/}
+
+        {/*    <AddPlacePopup*/}
+        {/*      isOpen={isAddPlacePopupOpen}*/}
+        {/*      onClose={closeAllPopups}*/}
+        {/*      onOverlayClose={handleOverlayClose}*/}
+        {/*      onSubmitPopup={handleAddPlace}*/}
+        {/*      isUploading={isUploading}*/}
+        {/*    />*/}
+
+        {/*    <EditAvatarPopup*/}
+        {/*      isOpen={isEditAvatarPopupOpen}*/}
+        {/*      onClose={closeAllPopups}*/}
+        {/*      onOverlayClose={handleOverlayClose}*/}
+        {/*      onSubmitPopup={handleUpdateAvatar}*/}
+        {/*      isUploading={isUploading}*/}
+        {/*    />*/}
+
+        {/*    <ImagePopup*/}
+        {/*      isImagePopupOpen={isImagePopupOpen}*/}
+        {/*      card={selectedCard}*/}
+        {/*      onClose={closeAllPopups}*/}
+        {/*      onOverlayClose={handleOverlayClose}*/}
+        {/*    />*/}
+
+        {/*    <ConfirmCardDelete*/}
+        {/*      isOpen={isDeleteConfirmationOpen}*/}
+        {/*      onClose={closeAllPopups}*/}
+        {/*      onOverlayClose={handleOverlayClose}*/}
+        {/*      onSubmitPopup={confirmCardDelete}*/}
+        {/*      isUploading={isUploading}*/}
+        {/*    />*/}
+        {/*  </>*/}
+        {/*}/>*/}
+      </Routes>
 
       <Footer/>
-
-      <EditProfilePopup
-        isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}
-        onOverlayClose={handleOverlayClose}
-        onSubmitPopup={handleUpdateUser}
-        isUploading={isUploading}
-      />
-
-      <AddPlacePopup
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-        onOverlayClose={handleOverlayClose}
-        onSubmitPopup={handleAddPlace}
-        isUploading={isUploading}
-      />
-
-      <EditAvatarPopup
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-        onOverlayClose={handleOverlayClose}
-        onSubmitPopup={handleUpdateAvatar}
-        isUploading={isUploading}
-      />
-
-      <ImagePopup
-        isImagePopupOpen={isImagePopupOpen}
-        card={selectedCard}
-        onClose={closeAllPopups}
-        onOverlayClose={handleOverlayClose}
-      />
-
-      <ConfirmCardDelete
-        isOpen={isDeleteConfirmationOpen}
-        onClose={closeAllPopups}
-        onOverlayClose={handleOverlayClose}
-        onSubmitPopup={confirmCardDelete}
-        isUploading={isUploading}
-      />
 
     </CurrentUserContext.Provider>
   );

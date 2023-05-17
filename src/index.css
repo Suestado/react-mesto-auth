@@ -3,6 +3,10 @@
 @import url(./blocks/page/page.css);
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
+@import url(./blocks/header/__authLink/header__authLink.css);
+@import url(./blocks/header/__userMail/header__userMail.css);
+@import url(./blocks/header/__navBar/header__navBar.css);
+@import url(./blocks/header/__authLink/_logOut/header__authLink_logOut_active.css);
 @import url(./blocks/elements/elements.css);
 @import url(./blocks/element/element.css);
 @import url(./blocks/element/__image/element__image.css);
@@ -41,3 +45,13 @@
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);
 @import url(./blocks/popup/_opened/popup_opened.css);
+@import url(./blocks/auth-form/auth-form.css);
+@import url(./blocks/auth-form/__form/auth-form__form.css);
+@import url(./blocks/auth-form/__header/auth-form__header.css);
+@import url(./blocks/auth-form/__input/auth-form__input.css);
+@import url(./blocks/auth-form/__logInOffer/auth-form__logInOffer.css);
+@import url(./blocks/auth-form/__logInOffer/_active/auth-form__logInOffer_active.css);
+@import url(./blocks/auth-form/__redirectToLogIn/auth-form__redirectToLogIn.css);
+@import url(./blocks/auth-form/__submit/auth-form__submit.css);
+
+
