@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 import Api from '../utils/Api.js';
 import Header from './Header.js';
@@ -12,7 +12,7 @@ import AddPlacePopup from './AddPlacePopup.js';
 import ConfirmCardDelete from './ConfirmCardDelete.js';
 import Login from './Login.js';
 import Register from './Register.js';
-import AuthForm from './AuthForm.js';
+import ProtectedRouteElement from './ProtectedRoute.js';
 
 
 function App() {
@@ -26,6 +26,7 @@ function App() {
   const [deletedCardItem, setDeletedCardItem] = useState('');
   const [selectedCard, setSelectedCard] = useState({});
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     Api.getUserInfo()
@@ -114,69 +115,73 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
 
       <Header/>
-      <AuthForm/>
       <Routes>
-        <Route path="/sign-up" element={Login} />
-        <Route path="/sign-in" element={Register} />
 
-        {/*<Route path="/" element={*/}
-        {/*  <>*/}
-        {/*    <Main*/}
-        {/*      onEditProfile={() => setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}*/}
-        {/*      onAddPlace={() => setIsAddPlacePopupOpen(!isAddPlacePopupOpen)}*/}
-        {/*      onEditAvatar={() => setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}*/}
-        {/*      onImagePopup={() => setIsImagePopupOpen(!setIsImagePopupOpen)}*/}
-        {/*      onClose={closeAllPopups}*/}
-        {/*      isImagePopupOpen={isImagePopupOpen}*/}
-        {/*      handleCardClick={(evt) => {*/}
-        {/*        setSelectedCard(evt.target);*/}
-        {/*        setIsImagePopupOpen(!isImagePopupOpen);*/}
-        {/*      }}*/}
-        {/*      cards={cards}*/}
-        {/*      onCardLike={handleCardLike}*/}
-        {/*      onCardDelete={handleCardDelete}*/}
-        {/*    />*/}
+        <Route path="/sign-up" element={<Login/>}/>
+        <Route path="/sign-in" element={<Register/>}/>
 
-        {/*    <EditProfilePopup*/}
-        {/*      isOpen={isEditProfilePopupOpen}*/}
-        {/*      onClose={closeAllPopups}*/}
-        {/*      onOverlayClose={handleOverlayClose}*/}
-        {/*      onSubmitPopup={handleUpdateUser}*/}
-        {/*      isUploading={isUploading}*/}
-        {/*    />*/}
+        <Route path="/"
+               isLoggedIn={isLoggedIn}
+               element={<ProtectedRouteElement element={
+          <>
+            <Main
+              onEditProfile={() => setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}
+              onAddPlace={() => setIsAddPlacePopupOpen(!isAddPlacePopupOpen)}
+              onEditAvatar={() => setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}
+              onImagePopup={() => setIsImagePopupOpen(!setIsImagePopupOpen)}
+              onClose={closeAllPopups}
+              isImagePopupOpen={isImagePopupOpen}
+              handleCardClick={(evt) => {
+                setSelectedCard(evt.target);
+                setIsImagePopupOpen(!isImagePopupOpen);
+              }}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
 
-        {/*    <AddPlacePopup*/}
-        {/*      isOpen={isAddPlacePopupOpen}*/}
-        {/*      onClose={closeAllPopups}*/}
-        {/*      onOverlayClose={handleOverlayClose}*/}
-        {/*      onSubmitPopup={handleAddPlace}*/}
-        {/*      isUploading={isUploading}*/}
-        {/*    />*/}
+            <EditProfilePopup
+              isOpen={isEditProfilePopupOpen}
+              onClose={closeAllPopups}
+              onOverlayClose={handleOverlayClose}
+              onSubmitPopup={handleUpdateUser}
+              isUploading={isUploading}
+            />
 
-        {/*    <EditAvatarPopup*/}
-        {/*      isOpen={isEditAvatarPopupOpen}*/}
-        {/*      onClose={closeAllPopups}*/}
-        {/*      onOverlayClose={handleOverlayClose}*/}
-        {/*      onSubmitPopup={handleUpdateAvatar}*/}
-        {/*      isUploading={isUploading}*/}
-        {/*    />*/}
+            <AddPlacePopup
+              isOpen={isAddPlacePopupOpen}
+              onClose={closeAllPopups}
+              onOverlayClose={handleOverlayClose}
+              onSubmitPopup={handleAddPlace}
+              isUploading={isUploading}
+            />
 
-        {/*    <ImagePopup*/}
-        {/*      isImagePopupOpen={isImagePopupOpen}*/}
-        {/*      card={selectedCard}*/}
-        {/*      onClose={closeAllPopups}*/}
-        {/*      onOverlayClose={handleOverlayClose}*/}
-        {/*    />*/}
+            <EditAvatarPopup
+              isOpen={isEditAvatarPopupOpen}
+              onClose={closeAllPopups}
+              onOverlayClose={handleOverlayClose}
+              onSubmitPopup={handleUpdateAvatar}
+              isUploading={isUploading}
+            />
 
-        {/*    <ConfirmCardDelete*/}
-        {/*      isOpen={isDeleteConfirmationOpen}*/}
-        {/*      onClose={closeAllPopups}*/}
-        {/*      onOverlayClose={handleOverlayClose}*/}
-        {/*      onSubmitPopup={confirmCardDelete}*/}
-        {/*      isUploading={isUploading}*/}
-        {/*    />*/}
-        {/*  </>*/}
-        {/*}/>*/}
+            <ImagePopup
+              isImagePopupOpen={isImagePopupOpen}
+              card={selectedCard}
+              onClose={closeAllPopups}
+              onOverlayClose={handleOverlayClose}
+            />
+
+            <ConfirmCardDelete
+              isOpen={isDeleteConfirmationOpen}
+              onClose={closeAllPopups}
+              onOverlayClose={handleOverlayClose}
+              onSubmitPopup={confirmCardDelete}
+              isUploading={isUploading}
+            />
+          </>
+        }
+        />}
+        />
       </Routes>
 
       <Footer/>

@@ -1,10 +1,12 @@
- function AuthForm(props) {
-  return(
+import { Link } from 'react-router-dom';
+
+function AuthForm(props) {
+  return (
     <div className="auth-form">
-      <h2 className="auth-form__header">Зарегистроваться</h2>
+      <h2 className="auth-form__header">{props.header}</h2>
       <form
         className="auth-form__form"
-        id="authForm-form"
+        id={props.formName}
         action="#"
         method="post"
         name={props.formName}
@@ -39,15 +41,15 @@
           id={`submit-${props.formName}`}
           name={`submit-${props.formName}`}
         >
-          Зарегистрироваться
+          {props.submitText}
         </button>
 
       </form>
-      <span className="auth-form__logInOffer">
-        Уже зарегистрированы? <a className="auth-form__redirectToLogIn">Войти</a>
+      <span className={`auth-form__logInOffer ${props.registration && 'auth-form__logInOffer_active'}`}>
+        Уже зарегистрированы? <Link to="/sign-up" className="auth-form__redirectToLogIn">Войти</Link>
       </span>
     </div>
-  )
- }
+  );
+}
 
- export default AuthForm;
+export default AuthForm;
