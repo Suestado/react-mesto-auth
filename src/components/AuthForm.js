@@ -18,7 +18,6 @@ function AuthForm(props) {
 
   function handleSubmitForm() {
     props.onSubmit(watch("email"), watch("password"))
-    props.setIsUserEmail(watch("email"));
   }
 
   return (

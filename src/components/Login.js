@@ -1,20 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import AuthForm from './AuthForm.js';
 
-function Login ({onSubmit, setIsLoggedIn, setIsUserEmail}) {
+function Login({ onSubmit, setIsLoggedIn }) {
   const navigate = useNavigate();
 
   function handleSubmitForm(email, password) {
     onSubmit(email, password)
       .then((data) => {
         if(data.token) {
-          setIsLoggedIn(true)
-          navigate("/", {replace: true});
+          setIsLoggedIn(true);
+          navigate('/', { replace: true });
+          localStorage.setItem('userEmail', email);
           localStorage.setItem('jwtToken', data.token);
         } else {
-            alert("Неправильный логин или пароль")
+          alert('Неправильный логин или пароль');
         }
-      })
+      });
   }
 
   return (
@@ -22,10 +23,9 @@ function Login ({onSubmit, setIsLoggedIn, setIsUserEmail}) {
       header="Вход"
       formName="form-authorisation"
       onSubmit={handleSubmitForm}
-      setIsUserEmail={setIsUserEmail}
       submitText="Войти"
     />
-  )
+  );
 }
 
 export default Login;
