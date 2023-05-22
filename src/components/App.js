@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 import Api from '../utils/Api.js';
 import Header from './Header.js';
@@ -13,11 +13,13 @@ import ConfirmCardDelete from './ConfirmCardDelete.js';
 import Login from './Login.js';
 import Register from './Register.js';
 import ProtectedRouteElement from './ProtectedRoute.js';
+import { authorization, getToken, registration } from './Auth.js';
 
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const navigate = useNavigate();
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -27,6 +29,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [isUploading, setIsUploading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isUserEmail, setIsUserEmail] = useState('')
 
   useEffect(() => {
     Api.getUserInfo()
@@ -44,6 +47,10 @@ function App() {
       .catch((err) => {
         console.log(`Стартовые карточки не могут быть загружены с сервера: Error: ${err}`);
       });
+  }, []);
+
+  useEffect(() => {
+    checkJWTToken();
   }, []);
 
   function closeAllPopups() {
@@ -109,78 +116,121 @@ function App() {
     }
   }
 
+  function handleRegistrationSubmit(email, password) {
+    return registration(email, password)
+      .catch((err) => {
+        console.log(`Регистрация не была проведена: ${err}`);
+      });
+  }
 
+  function handleAuthorizationSubmit(email, password) {
+    return authorization(email, password)
+      .catch((err) => {
+          console.log(`Авторизация завершилась неудачей: ${err}`);
+        },
+      );
+  }
+
+  function checkJWTToken() {
+    if(localStorage.getItem('jwtToken')) {
+      const jwt = localStorage.getItem('jwtToken');
+
+      getToken(jwt)
+        .then((data) => {
+          if(data.data._id && data.data.email) {
+            setIsLoggedIn(true);
+            navigate('/', { replace: true });
+          }
+        });
+    }
+  }
+
+  function onLeavePage() {
+    localStorage.removeItem('jwtToken');
+    setIsLoggedIn(false);
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
 
-      <Header/>
+      <Header
+        userEmail={isUserEmail}
+        onClick={onLeavePage}
+      />
       <Routes>
 
-        <Route path="/sign-up" element={<Login/>}/>
-        <Route path="/sign-in" element={<Register/>}/>
+        <Route path="/sign-up" element={<Login
+          onSubmit={handleAuthorizationSubmit}
+          setIsLoggedIn={setIsLoggedIn}
+          setIsUserEmail={setIsUserEmail}
+        />}/>
+        <Route path="/sign-in" element={<Register
+          onSubmit={handleRegistrationSubmit}
+        />}/>
 
         <Route path="/"
-               isLoggedIn={isLoggedIn}
-               element={<ProtectedRouteElement element={
-          <>
-            <Main
-              onEditProfile={() => setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}
-              onAddPlace={() => setIsAddPlacePopupOpen(!isAddPlacePopupOpen)}
-              onEditAvatar={() => setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}
-              onImagePopup={() => setIsImagePopupOpen(!setIsImagePopupOpen)}
-              onClose={closeAllPopups}
-              isImagePopupOpen={isImagePopupOpen}
-              handleCardClick={(evt) => {
-                setSelectedCard(evt.target);
-                setIsImagePopupOpen(!isImagePopupOpen);
-              }}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-            />
+               element={
+                 <ProtectedRouteElement
+                   isLoggedIn={isLoggedIn}
+                   element={
+                     <>
+                       <Main
+                         onEditProfile={() => setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}
+                         onAddPlace={() => setIsAddPlacePopupOpen(!isAddPlacePopupOpen)}
+                         onEditAvatar={() => setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}
+                         onImagePopup={() => setIsImagePopupOpen(!setIsImagePopupOpen)}
+                         onClose={closeAllPopups}
+                         isImagePopupOpen={isImagePopupOpen}
+                         handleCardClick={(evt) => {
+                           setSelectedCard(evt.target);
+                           setIsImagePopupOpen(!isImagePopupOpen);
+                         }}
+                         cards={cards}
+                         onCardLike={handleCardLike}
+                         onCardDelete={handleCardDelete}
+                       />
 
-            <EditProfilePopup
-              isOpen={isEditProfilePopupOpen}
-              onClose={closeAllPopups}
-              onOverlayClose={handleOverlayClose}
-              onSubmitPopup={handleUpdateUser}
-              isUploading={isUploading}
-            />
+                       <EditProfilePopup
+                         isOpen={isEditProfilePopupOpen}
+                         onClose={closeAllPopups}
+                         onOverlayClose={handleOverlayClose}
+                         onSubmitPopup={handleUpdateUser}
+                         isUploading={isUploading}
+                       />
 
-            <AddPlacePopup
-              isOpen={isAddPlacePopupOpen}
-              onClose={closeAllPopups}
-              onOverlayClose={handleOverlayClose}
-              onSubmitPopup={handleAddPlace}
-              isUploading={isUploading}
-            />
+                       <AddPlacePopup
+                         isOpen={isAddPlacePopupOpen}
+                         onClose={closeAllPopups}
+                         onOverlayClose={handleOverlayClose}
+                         onSubmitPopup={handleAddPlace}
+                         isUploading={isUploading}
+                       />
 
-            <EditAvatarPopup
-              isOpen={isEditAvatarPopupOpen}
-              onClose={closeAllPopups}
-              onOverlayClose={handleOverlayClose}
-              onSubmitPopup={handleUpdateAvatar}
-              isUploading={isUploading}
-            />
+                       <EditAvatarPopup
+                         isOpen={isEditAvatarPopupOpen}
+                         onClose={closeAllPopups}
+                         onOverlayClose={handleOverlayClose}
+                         onSubmitPopup={handleUpdateAvatar}
+                         isUploading={isUploading}
+                       />
 
-            <ImagePopup
-              isImagePopupOpen={isImagePopupOpen}
-              card={selectedCard}
-              onClose={closeAllPopups}
-              onOverlayClose={handleOverlayClose}
-            />
+                       <ImagePopup
+                         isImagePopupOpen={isImagePopupOpen}
+                         card={selectedCard}
+                         onClose={closeAllPopups}
+                         onOverlayClose={handleOverlayClose}
+                       />
 
-            <ConfirmCardDelete
-              isOpen={isDeleteConfirmationOpen}
-              onClose={closeAllPopups}
-              onOverlayClose={handleOverlayClose}
-              onSubmitPopup={confirmCardDelete}
-              isUploading={isUploading}
-            />
-          </>
-        }
-        />}
+                       <ConfirmCardDelete
+                         isOpen={isDeleteConfirmationOpen}
+                         onClose={closeAllPopups}
+                         onOverlayClose={handleOverlayClose}
+                         onSubmitPopup={confirmCardDelete}
+                         isUploading={isUploading}
+                       />
+                     </>
+                   }
+                 />}
         />
       </Routes>
 
