@@ -10,6 +10,7 @@ import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import ConfirmCardDelete from './ConfirmCardDelete.js';
+import InfoToolTip from './InfoTooltip.js';
 import Login from './Login.js';
 import Register from './Register.js';
 import ProtectedRouteElement from './ProtectedRoute.js';
@@ -25,11 +26,13 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [isInfoToolTipOpen, setIsInfoToolTipOpen] =useState(false);
   const [deletedCardItem, setDeletedCardItem] = useState('');
   const [selectedCard, setSelectedCard] = useState({});
   const [isUploading, setIsUploading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isUserEmail, setIsUserEmail] = useState('')
+  const [isUserEmail, setIsUserEmail] = useState('');
+  const [isRegistered, setIsRegistered] = useState(null);
 
   useEffect(() => {
     Api.getUserInfo()
@@ -59,6 +62,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsImagePopupOpen(false);
     setIsDeleteConfirmationOpen(false);
+    setIsInfoToolTipOpen(false);
   }
 
   function handleCardLike(card) {
@@ -159,14 +163,38 @@ function App() {
       />
       <Routes>
 
-        <Route path="/sign-up" element={<Login
-          onSubmit={handleAuthorizationSubmit}
-          setIsLoggedIn={setIsLoggedIn}
-          setIsUserEmail={setIsUserEmail}
-        />}/>
-        <Route path="/sign-in" element={<Register
-          onSubmit={handleRegistrationSubmit}
-        />}/>
+        <Route path="/sign-up" element={
+          <>
+            <Login
+              onSubmit={handleAuthorizationSubmit}
+              setIsLoggedIn={setIsLoggedIn}
+              setIsUserEmail={setIsUserEmail}
+            />
+            <InfoToolTip
+              isRegistered={isRegistered}
+              isOpen={isInfoToolTipOpen}
+              onClose={closeAllPopups}
+              name="InfoToolTip"
+            />
+          </>
+         }/>
+
+        <Route path="/sign-in" element={
+          <>
+            <Register
+              onSubmit={handleRegistrationSubmit}
+              setIsRegistered={setIsRegistered}
+              setIsInfoToolTipOpen={setIsInfoToolTipOpen}
+            />
+            <InfoToolTip
+              isRegistered={isRegistered}
+              isOpen={isInfoToolTipOpen}
+              onClose={closeAllPopups}
+              name="InfoToolTip"
+            />
+          </>
+        }/>
+
 
         <Route path="/"
                element={
