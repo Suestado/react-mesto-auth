@@ -130,6 +130,7 @@ function App() {
     return authorization(email, password)
       .catch((err) => {
           console.log(`Авторизация завершилась неудачей: ${err}`);
+          alert('Неправильный логин или пароль');
         },
       );
   }

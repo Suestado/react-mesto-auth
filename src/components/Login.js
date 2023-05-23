@@ -12,8 +12,6 @@ function Login({ onSubmit, setIsLoggedIn }) {
           navigate('/', { replace: true });
           localStorage.setItem('userEmail', email);
           localStorage.setItem('jwtToken', data.token);
-        } else {
-          alert('Неправильный логин или пароль');
         }
       });
   }
